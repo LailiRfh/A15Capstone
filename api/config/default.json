@@ -1,0 +1,10 @@
+{
+    "capstone-etilang": {
+      "dbConfig": {
+        "host": "localhost",
+        "port": 8800,
+        "dbName": "mongodb+srv://lailirofiah:lailirofiah@cluster1.ihblzpb.mongodb.net/etilang?retryWrites=true&w=majority"
+      }
+    }
+  }
+  
