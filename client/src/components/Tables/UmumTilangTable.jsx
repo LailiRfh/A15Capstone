@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -10,119 +10,128 @@ import TableRow from "@mui/material/TableRow";
 import useFetch from "../../hooks/useFetch";
 
 const columns = [
-    {
-      id: "nomorKendaraan",
-      label: "Nomor Kendaraan",
-      minWidth: 170,
-      align: "center",
-      format: (value) => value.toLocaleString("en-US"),
-    },
-    {
-      id: "tanggal",
-      label: "Waktu Pelanggaran",
-      minWidth: 100,
-      align: "center",
-    },
-    {
-      id: "lokasi",
-      label: "Lokasi Pelanggaran",
-      minWidth: 170,
-      align: "center",
-      format: (value) => value.toLocaleString("en-US"),
-    },
-    {
-      id: "keterangan",
-      label: "Keterangan",
-      minWidth: 170,
-      align: "center",
-    },
+  {
+    id: "nomorKendaraan",
+    label: "Nomor Kendaraan",
+    minWidth: 170,
+    align: "center",
+    format: (value) => value.toLocaleString("en-US"),
+  },
+  {
+    id: "tanggal",
+    label: "Waktu Pelanggaran",
+    minWidth: 100,
+    align: "center",
+  },
+  {
+    id: "lokasi",
+    label: "Lokasi Pelanggaran",
+    minWidth: 170,
+    align: "center",
+    format: (value) => value.toLocaleString("en-US"),
+  },
+  {
+    id: "keterangan",
+    label: "Keterangan",
+    minWidth: 170,
+    align: "center",
+  },
 ];
 
-export default function StickyHeadTable() {
-    const { data, loading, error } = useFetch("http://localhost:8800/api/tilang");
-    console.log("data", data);
-  
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  
-    const handleChangePage = (event, newPage) => {
-      setPage(newPage);
-    };
-  
-    const handleChangeRowsPerPage = (event) => {
-      setRowsPerPage(+event.target.value);
-      setPage(0);
-    };
+export default function UmumTilangTable() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const { data, loading, error, reFetch } = useFetch(
+    "http://localhost:8800/api/tilang",
+    searchTerm
+  );
 
-    const onClickRent = (data) => {
-      <img 
-      src="https://lh3.googleusercontent.com/-IdzPrqyeiaQ/YUFg9oObsAI/AAAAAAAAONk/M-l8ZdRoYJYXHzur3u1RC_B0Eas-iq7vgCLcBGAsYHQ/s1600/1631674611384307-0.png"
-      alt="imagee"
-      />
-    };
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-    return (
-      <Paper sx={{ width: "100%", overflow: "hidden" }}>
-        <TableContainer sx={{ maxHeight: 440 }}>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                {columns.map((column) => (
-                  <TableCell
-                    key={column.id}
-                    align={column.align}
-                    style={{ minWidth: column.minWidth }}
-                  >
-                    {column.label}
-                  </TableCell>
-                ))}
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
 
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
-                  return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                      {columns.map((column) => {
-                        const value = row[column.id];
-                        return (
-                          <TableCell key={column.id} align={column.align}>
-                            {column.format &&
-                            (typeof value === "number" ||
-                              typeof value === "boolean")
-                              ? column.format(value)
-                              : value}
-                          </TableCell>
-                         );  
-                        })}
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
 
-                          <TableCell>
-                        <button
-                          onClick={() => onClickRent(row)}
-                          className=" outline outline-2 outline-red-800 w-[100px] h-[30px] bg-red-800 text-white rounded-[10px]"
-                        >
-                          <p className="inline"> Cek Bukti</p>
-                        </button>
-                        </TableCell>
+  const handleSearch = () => {
+    reFetch();
+  };
 
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 100]}
-          component="div"
-          count={data.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
+  const onClickCheck = (url) => {
+    window.open(url, "_blank");
+  };
+
+  return (
+    <Paper sx={{ width: "100%", overflow: "hidden" }}>
+      <div className="flex justify-center items-center max-w-[1256px] mx-auto px-4 py-7 rounded-[30px]">
+        
+        <input
+          className="bg-gray-50 border border-gray-300 text-center text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-50 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black"
+          type="text"
+          placeholder="Silahkan masukkan nomor kendaraan Anda"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
-      </Paper>
-    );
-  }
-  
+
+      
+      </div>
+
+      <TableContainer sx={{ maxHeight: 440 }}>
+        <Table stickyHeader aria-label="sticky table">
+          <TableHead>
+            <TableRow>
+              {columns.map((column) => (
+                <TableCell
+                  key={column.id}
+                  align={column.align}
+                  style={{ minWidth: column.minWidth }}
+                >
+                  {column.label}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((row) => (
+                <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                  {columns.map((column) => (
+                    <TableCell key={column.id} align={column.align}>
+                      {column.id === 'keterangan' ? (
+                        <button
+                        onClick={() => onClickCheck(row[column.id])}
+                        className="outline outline-2 outline-red-800 w-[100px] h-[30px] bg-red-800 text-white rounded-[10px]"
+                      >
+                        <p className="inline">Cek Bukti</p>
+                      </button>
+                      ) : (
+                        column.format &&
+                        (typeof row[column.id] === "number" ||
+                          typeof row[column.id] === "boolean")
+                          ? column.format(row[column.id])
+                          : row[column.id]
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[10, 25, 100]}
+        component="div"
+        count={data.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+    </Paper>
+  );
+}

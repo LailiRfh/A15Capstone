@@ -43,12 +43,29 @@ export const findTilangById = async (req, res, next) => {
     }
 }
 
-//findAll
+// findAll
+// Import necessary modules and models
+
 export const findAllTilang = async (req, res, next) => {
     try {
-        const tilangs = await  Tilang.find()
-        res.status(200).json(tilangs)
-    }catch(err) {
-        res.status(500).json(err)
+        const searchTerm = req.query.search;
+
+        // If there's a search term, construct a case-insensitive regular expression
+        if (searchTerm) {
+            const regex = new RegExp(searchTerm, 'i');
+            const query = {
+                nomorKendaraan: regex,
+            };
+
+            const tilangs = await Tilang.find(query);
+            res.status(200).json(tilangs);
+        } else {
+            // If no search term provided, fetch all tilangs
+            const tilangs = await Tilang.find();
+            res.status(200).json(tilangs);
+        }
+    } catch (err) {
+        res.status(500).json(err);
     }
-}
+};
+
