@@ -46,124 +46,109 @@ const columns = [
     },
 ];
 
+// ... (Your imports and columns definition remain the same)
+
 export default function StickyHeadTable() {
-    const { data, loading, error } = useFetch("http://localhost:8800/api/tilang");
-    console.log("data", data);
-    let [parseData, setParseData] = useState();
-    let [editModal, setEditModal] = useState(false);
-    let [deleteModal, setDeleteModal] = useState(false);
-    let [addModal, setAddModal] = useState(false);
-  
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  
-    const handleChangePage = (event, newPage) => {
-      setPage(newPage);
-    };
-  
-    const handleChangeRowsPerPage = (event) => {
-      setRowsPerPage(+event.target.value);
-      setPage(0);
-    };
+  const { data, loading, error } = useFetch("http://localhost:8800/api/tilang");
+  console.log("data", data);
+  let [parseData, setParseData] = useState();
+  let [editModal, setEditModal] = useState(false);
+  let [deleteModal, setDeleteModal] = useState(false);
+  let [addModal, setAddModal] = useState(false);
 
-      
-    const onClickEdit = (data) => {
-      setEditModal(true);
-      setParseData(data);
-    };
-    const onClickDelete = (data) => {
-      setDeleteModal(true);
-      setParseData(data);
-    };
-    const onClickAdd = (data) => {
-      setAddModal(true);
-      setParseData(data);
-    };
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-    return (
-      <Paper sx={{ width: "100%", overflow: "hidden" }}>
-        <TableContainer sx={{ maxHeight: 440 }}>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                {columns.map((column) => (
-                  <TableCell
-                    key={column.id}
-                    align={column.align}
-                    style={{ minWidth: column.minWidth }}
-                  >
-                    {column.label}
-                  </TableCell>
-                ))}
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
 
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
-                  return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                      {columns.map((column) => {
-                        const value = row[column.id];
-                        return (
-                          <TableCell key={column.id} align={column.align}>
-                            {column.format &&
-                            (typeof value === "number" ||
-                              typeof value === "boolean")
-                              ? column.format(value)
-                              : value}
-                          </TableCell>
-                        );
-                      })}
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
 
-                    <TableCell>
-                      <button onClick={() => onClickEdit(row)}>
-                        <img src={EditIcon} />
-                      </button>
+  const onClickEdit = (data) => {
+    setEditModal(true);
+    setParseData(data);
+  };
+  const onClickDelete = (data) => {
+    setDeleteModal(true);
+    setParseData(data);
+  };
+  const onClickAdd = (data) => {
+    setAddModal(true);
+    setParseData(data);
+  };
 
-                      {editModal ? (
-                        <>
-                          <EditTilangModal
-                            state={editModal}
-                            setState={setEditModal}
-                            data={parseData}
-                          />
-                        </>
-                      ) : null}
-                      <button
-                        className="ml-1"
-                        onClick={() => onClickDelete(row)}
-                      >
-                        <img src={DeleteIcon} width="25px" />
-                      </button>
-                      {deleteModal ? (
-                        <>
-                          <DeleteTilangModal
-                            state={deleteModal}
-                            setState={setDeleteModal}
-                            data={parseData}
-                          />
-                        </>
-                      ) : null}
+  return (
+    <Paper sx={{ width: "100%", overflow: "hidden" }}>
+      <TableContainer sx={{ maxHeight: 440 }}>
+        <Table stickyHeader aria-label="sticky table">
+          <TableHead>
+            <TableRow>
+              {columns.map((column) => (
+                <TableCell
+                  key={column.id}
+                  align={column.align}
+                  style={{ minWidth: column.minWidth }}
+                >
+                  {column.label}
+                </TableCell>
+              ))}
+              <TableCell>Action</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((row) => (
+                <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                  {columns.map((column) => (
+                    <TableCell key={column.id} align={column.align}>
+                      {column.format &&
+                      (typeof row[column.id] === "number" ||
+                        typeof row[column.id] === "boolean")
+                        ? column.format(row[column.id])
+                        : row[column.id]}
                     </TableCell>
-
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 100]}
-          component="div"
-          count={data.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
+                  ))}
+                  <TableCell>
+                    <button onClick={() => onClickEdit(row)}>
+                      <img src={EditIcon} alt="Edit" />
+                    </button>
+                    <button className="ml-1" onClick={() => onClickDelete(row)}>
+                      <img src={DeleteIcon} alt="Delete" width="25px" />
+                    </button>
+                  </TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[10, 25, 100]}
+        component="div"
+        count={data.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+      {editModal && (
+        <EditTilangModal
+          state={editModal}
+          setState={setEditModal}
+          data={parseData}
         />
-      </Paper>
-    );
-  }
-  
+      )}
+      {deleteModal && (
+        <DeleteTilangModal
+          state={deleteModal}
+          setState={setDeleteModal}
+          data={parseData}
+        />
+      )}
+    </Paper>
+  );
+}
