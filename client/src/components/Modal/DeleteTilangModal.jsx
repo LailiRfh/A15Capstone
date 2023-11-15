@@ -43,17 +43,17 @@ const DeleteTilangModal = (props) => {
     console.log(inputs);
     console.log(props.data._id);
     axios
-      .delete("http://localhost:8800/api/tilang" + props.data._id, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then(function (response) {
-        console.log(response);
-        setAlert({ open: true, vertical: "bottom", horizontal: "right" });
-        // setState(false)
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    .delete("http://localhost:8800/api/tilang/" + props.data._id, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then(function (response) {
+      console.log(response);
+      setAlert({ open: true, vertical: "bottom", horizontal: "right" });
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  
   };
   return (
     <>

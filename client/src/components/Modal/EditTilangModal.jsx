@@ -43,16 +43,17 @@ const EditTilangModal = (props) => {
     console.log(inputs);
     console.log(props.data._id);
     axios
-      .put("http://localhost:8800/api/tilang" + props.data._id, inputs, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then(function (response) {
-        console.log(response);
-        setAlert({ open: true, vertical: "bottom", horizontal: "right" });
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    .put("http://localhost:8800/api/tilang/" + props.data._id, inputs, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then(function (response) {
+      console.log(response);
+      setAlert({ open: true, vertical: "bottom", horizontal: "right" });
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  
   };
   return (
     <>
@@ -95,7 +96,7 @@ const EditTilangModal = (props) => {
                         className=" block outline outline-2 outline-blue-dark mx-1 mt-4 px-2 py-1 w-[232px] rounded-[10px] text-black"
                       />
                       <input
-                        name="keteragan"
+                        name="keterangan"
                         required
                         placeholder="Keterangan"
                         type="text"
